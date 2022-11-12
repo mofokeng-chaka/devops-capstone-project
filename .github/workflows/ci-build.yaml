@@ -30,7 +30,7 @@ jobs:
 
       - name: Install dependecies
         run: |
-          python -m pip install --upgrade pip wheel
+          python -m pip install --root-user-action=ignore --upgrade pip wheel
           pip install -r requirements
 
       - name: Lint with flake8
