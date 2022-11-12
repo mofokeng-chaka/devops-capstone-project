@@ -8,6 +8,7 @@ import os
 from service import app
 from service.models import Account, DataValidationError, db
 from tests.factories import AccountFactory
+from datetime import date
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/postgres"
@@ -175,3 +176,27 @@ class TestAccount(unittest.TestCase):
         """It should not Deserialize an account with a TypeError"""
         account = Account()
         self.assertRaises(DataValidationError, account.deserialize, [])
+    
+    def test_deserialize_with_date_joined_as_today(self):
+        """It should Deserialize an account with date joined as today's date"""
+        account = AccountFactory()
+        account.create()
+        serial_account = account.serialize()
+        del serial_account["date_joined"]
+        new_account = Account()
+        new_account.deserialize(serial_account)
+        self.assertEqual(new_account.name, account.name)
+        self.assertEqual(new_account.email, account.email)
+        self.assertEqual(new_account.address, account.address)
+        self.assertEqual(new_account.phone_number, account.phone_number)
+        self.assertEqual(new_account.date_joined, date.today())
+
+
+
+    def test_string_representation(self):
+        """It should Represent an account"""
+        account = Account()
+        self.assertEqual(
+            f"<Account {account.name} id=[{account.id}]>",
+            repr(account)  
+        )
