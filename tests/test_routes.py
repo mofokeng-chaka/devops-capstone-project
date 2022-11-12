@@ -152,6 +152,22 @@ class TestAccountService(TestCase):
 
         self.assertIn("could not be found", message)
 
+    def test_get_account_list(self):
+        """It should Get a list of Accounts"""
+
+        # Create new accounts
+        accounts = self._create_accounts(5)
+
+        response = self.client.get(f"{BASE_URL}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        accounts_list = response.get_json()
+        self.assertEqual(len(accounts_list), len(accounts))
+
+
+
+
+
 
 
 
